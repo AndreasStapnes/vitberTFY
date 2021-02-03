@@ -34,7 +34,11 @@ Ks = K0 + K1*zs/za*np.exp(-zs/za) + K2*(zmax-zs)/zb*np.exp(-(zmax-zs)/zb)
 
 
 def concentration(t): #funksjon som angir stabilt hav-CO2-nivå
+<<<<<<< HEAD
+    return conc #+ (np.exp(t/(3600*24*180)))
+=======
     return conc + (np.exp(t/(3600*24*180)))
+>>>>>>> 9bceb7e0941ad76b205657db0b88ee6daec17002
 
 
 
