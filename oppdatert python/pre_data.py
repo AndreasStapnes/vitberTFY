@@ -16,7 +16,6 @@ conc    =   H*PCO2 #Stabil CO2 konsentrasjon i vannet
 
 a       =   6.97e-7
 u       =   10
-
 kw      =   a*u**2
 
 K0      =   1e-3; 
@@ -26,24 +25,30 @@ K2      =   5e-2;  #Kalles Kb i teksten
 za = 7; zb = 10;
 
 
-zs, zstep = np.linspace(0, zmax, n, retstep=True)
 
+zs, zstep = np.linspace(0, zmax, n, retstep=True)
 
 Ks = K0 + K1*zs/za*np.exp(-zs/za) + K2*(zmax-zs)/zb*np.exp(-(zmax-zs)/zb)
 #K-verdier
 
-C = np.zeros_like(zs)
-DK = np.concatenate((np.array([0]),  #kalles K' i teksten
-                     Ks[2:] - Ks[:-2], 
-                     np.array([0])))
+
+
+def concentration(t): #funksjon som angir stabilt hav-CO2-nivå
+    return conc + (np.exp(t/(3600*24*180)))
+
 
 
 #Hjelpestørrelser:
 dagIS = 3600*24
 
 
-def concentration(t): #funksjon som angir stabilt hav-CO2-nivå
-    return conc
+#størrelser en ikke burde endre på
+
+C = np.zeros_like(zs)
+DK = np.concatenate((np.array([0]),  #kalles K' i teksten
+                     Ks[2:] - Ks[:-2], 
+                     np.array([0])))
+
 
 
 
