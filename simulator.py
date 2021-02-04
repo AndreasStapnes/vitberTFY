@@ -20,7 +20,7 @@ equilib_conc = pd.concentration;
 
 
 create_band = True
-
+plot = True
 
 
 
@@ -45,7 +45,7 @@ minmax_lvls = [];
 
 Cs = [] #Lagrer konsentrasjoner for spesifikke tidspunkter    
 ts = [] #Lagrer de nevnte tidspunktene
-modmax = 100
+modmax = 40
 plt_skiprate = 30
 
 
@@ -62,10 +62,13 @@ def hexify_proportion(num, max_num):
 def special_color(num, num_max):
     return "#" + "ff" + hexify_proportion(num_max-num, num_max)*2
 
+
+
+dt = 3600 #sekund mellom hver simulasjons-event    
+R,L = make_RL(dt, banded=create_band)
 for enum in range(10):
-    dt = 1800 #sekund mellom hver simulasjons-event    
+    
     t = 0;   modnum = 0;
-    R,L = make_RL(dt, banded=create_band)
     
     while(t<dagIS*180*2/110*(enum+1) and activedisplay):
         S = makeS(dt, t_show)
@@ -73,7 +76,7 @@ for enum in range(10):
         t+= dt;         t_show += dt;       modnum += 1
         
         C = develop(C,R,L,S, band_matrix=create_band)
-        if(modnum % modmax == 0):
+        if(modnum % modmax == 0 and plot):
             minmax_lvls.append([np.min(C), np.max(C), equilib_conc(t_show), t_show])
             
             #plt.figure(0)
