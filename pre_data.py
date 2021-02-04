@@ -10,9 +10,9 @@ import numpy as np
 zmax    = 100       #dybde i meter
 n       = 1000      #antall målepunkter i dybden
 
-H       =   5080e-3
-PCO2    =   415e-6
-conc    =   H*PCO2 #Stabil CO2 konsentrasjon i vannet
+H       =   5060 
+PCO2_0  =   415e-6 #Brukes ikke, men er start-konsentrasjonen for co2 i luften
+#conc   =   H*PCO2 = Stabil CO2 konsentrasjon i vannet
 
 a       =   6.97e-7
 u       =   10
@@ -32,10 +32,8 @@ Ks = K0 + K1*zs/za*np.exp(-zs/za) + K2*(zmax-zs)/zb*np.exp(-(zmax-zs)/zb)
 #K-verdier
 
 
-
-def concentration(t): #funksjon som angir stabilt hav-CO2-nivå
-    return conc #+ (np.exp(t/(3600*24*180)))
-
+atmospheric_co2 = lambda t: 415e-6*(np.exp(t/(3600*24*365)))
+concentration = lambda t: H*atmospheric_co2(t)
 
 
 #Hjelpestørrelser:
@@ -45,6 +43,9 @@ dagIS = 3600*24
 #størrelser en ikke burde endre på
 
 C = np.zeros_like(zs)
+#C += concentration(0) setter start-konsentrasjon som dagens konsentrasjon
+
+
 DK = np.concatenate((np.array([0]),  #kalles K' i teksten
                      Ks[2:] - Ks[:-2], 
                      np.array([0])))

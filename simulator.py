@@ -16,6 +16,8 @@ makeS= pd.makeS
 develop = pd.develop
 make_RL = pd.make_RL
 
+equilib_conc = pd.concentration;
+
 
 create_band = True
 
@@ -29,7 +31,7 @@ def handle_close(evt):
     activedisplay=False
     print("Activedisplay set to False")
 
-fig = plt.figure(0)
+fig, (concplot, minmax_plot) = plt.subplots(2,1, figsize=(10,10))
 fig.canvas.mpl_connect("close_event", handle_close)
 #fester her handle_close som kjøre-event når animasjons-figuren tvangs-lukkes
 #dette er for å avslutte animasjon når dette skjer.
@@ -39,13 +41,13 @@ fig.canvas.mpl_connect("close_event", handle_close)
 
 
 
+minmax_lvls = [];
 
-
-Cs = []    
-ts = []
+Cs = [] #Lagrer konsentrasjoner for spesifikke tidspunkter    
+ts = [] #Lagrer de nevnte tidspunktene
 modmax = 100
+plt_skiprate = 30
 
-plt.figure(0)
 
 dagIS = 3600*24
 
@@ -72,29 +74,44 @@ for enum in range(10):
         
         C = develop(C,R,L,S, band_matrix=create_band)
         if(modnum % modmax == 0):
-            fig.clf()
-            plt.figure(0)
-            plt.title("døgn = {:.2f}".format(t_show/60/60/24))
+            minmax_lvls.append([np.min(C), np.max(C), equilib_conc(t_show), t_show])
+            
+            #plt.figure(0)
+            concplot.cla()
+            concplot.set_title("døgn = {:.2f}".format(t_show/60/60/24))
             
             Cslen = len(Cs)
             for enum_2, (t_choice, C_choice) in enumerate(zip(ts,Cs)):
-                plt.plot(zs, C_choice, 
+                concplot.plot(zs[::plt_skiprate], C_choice[::plt_skiprate], 
                          label="{:.0f}D".format(t_choice/dagIS), 
                          color=special_color(enum_2+1, Cslen))
-            plt.plot(zs, C, label="{:.0f}D".format(t_show/dagIS), color="k")
-            plt.legend()
-            plt.draw()
-            plt.pause(1e-3)
+            concplot.plot(zs[::plt_skiprate], C[::plt_skiprate], label="{:.0f}D".format(t_show/dagIS), color="k")
+            concplot.set_xlabel("dybde i m")
+            concplot.legend()
+            #plt.pause(1e-4)
+            
+            minmax_plot.cla()
+            mins, maxs, eqs, tmms = np.array(minmax_lvls).T
+            tmms /= (3600*24)
+            minmax_plot.plot(tmms, mins, label="min", color="b")
+            minmax_plot.plot(tmms, maxs, label="max", color="r")
+            minmax_plot.plot(tmms, eqs, label="equilib", color="g")
+            #minmax_plot.set_title("atmosfærisk co2 av tid")
+            minmax_plot.legend()
+            minmax_plot.set_xlabel("t i D")
+            minmax_plot.set_ylabel("DIC")
+            plt.pause(1e-4)
+            
+            #plt.pause(1e-4)
     Cs.append(C)
     ts.append(t_show)
     
-fig.clf()
-plt.figure(0)
-plt.title("døgn = {:.2f}".format(t_show/dagIS))
+concplot.cla()
+concplot.set_title("døgn = {:.2f}".format(t_show/dagIS))
 Cslen = len(Cs)
 for enum_2, (t_choice, C_choice) in enumerate(zip(ts,Cs)):
-    plt.plot(zs, C_choice, 
+    concplot.plot(zs, C_choice, 
              label="{:.0f}D".format(t_choice/dagIS),
              color = special_color(enum_2+1, Cslen))
-plt.legend()
+concplot.legend()
     
