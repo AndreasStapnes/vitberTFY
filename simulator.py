@@ -117,4 +117,7 @@ for enum_2, (t_choice, C_choice) in enumerate(zip(ts,Cs)):
              label="{:.0f}D".format(t_choice/dagIS),
              color = special_color(enum_2+1, Cslen))
 concplot.legend()
+
+
+plt.savefig("figur.svg")
     

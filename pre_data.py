@@ -12,15 +12,15 @@ n       = 4000      #antall målepunkter i dybden
 
 H       =   5060 
 PCO2_0  =   415e-6 #Brukes ikke, men er start-konsentrasjonen for co2 i luften
-#conc   =   H*PCO2 = Stabil CO2 konsentrasjon i vannet
+#conc   =   H*PCO2 #= Stabil CO2 konsentrasjon i vannet
 
 a       =   6.97e-7
 u       =   10
 kw      =   a*u**2
 
-K0      =   1e-3; 
-K1      =   2e-2;  #Kalles Ka i teksten
-K2      =   5e-2;  #Kalles Kb i teksten
+K0      =   1e-3 
+K1      =   2e-2  #Kalles Ka i teksten
+K2      =   5e-2  #Kalles Kb i teksten
 
 za = 7; zb = 10;
 
@@ -31,8 +31,7 @@ zs, zstep = np.linspace(0, zmax, n, retstep=True)
 Ks = K0 + K1*zs/za*np.exp(-zs/za) + K2*(zmax-zs)/zb*np.exp(-(zmax-zs)/zb)
 #K-verdier
 
-
-atmospheric_co2 = lambda t: 415e-6*(np.exp(t/(3600*24*365)))
+atmospheric_co2 = lambda t: 415e-6*(1+t/(3600*24*180)/200)
 concentration = lambda t: H*atmospheric_co2(t)
 
 
@@ -43,7 +42,7 @@ dagIS = 3600*24
 #størrelser en ikke burde endre på
 
 C = np.zeros_like(zs)
-#C += concentration(0) setter start-konsentrasjon som dagens konsentrasjon
+C += concentration(0) #setter start-konsentrasjon som dagens konsentrasjon
 
 
 DK = np.concatenate((np.array([0]),  #kalles K' i teksten
