@@ -8,7 +8,7 @@ import numpy as np
 
 
 zmax    = 100       #dybde i meter
-n       = 4000      #antall målepunkter i dybden
+n       = 1000      #antall målepunkter i dybden
 
 H       =   5060 
 PCO2_0  =   415e-6 #Brukes ikke, men er start-konsentrasjonen for co2 i luften
@@ -31,7 +31,7 @@ zs, zstep = np.linspace(0, zmax, n, retstep=True)
 Ks = K0 + K1*zs/za*np.exp(-zs/za) + K2*(zmax-zs)/zb*np.exp(-(zmax-zs)/zb)
 #K-verdier
 
-atmospheric_co2 = lambda t: 415e-6*(1+t/(3600*24*180)/200)
+atmospheric_co2 = lambda t: 415e-6 *(1+ t/(3600*24*365)*0.02)
 concentration = lambda t: H*atmospheric_co2(t)
 
 
@@ -42,7 +42,7 @@ dagIS = 3600*24
 #størrelser en ikke burde endre på
 
 C = np.zeros_like(zs)
-C += concentration(0) #setter start-konsentrasjon som dagens konsentrasjon
+#C += concentration(0) #setter start-konsentrasjon som dagens konsentrasjon
 
 
 DK = np.concatenate((np.array([0]),  #kalles K' i teksten

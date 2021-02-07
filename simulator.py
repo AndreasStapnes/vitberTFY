@@ -31,8 +31,11 @@ def handle_close(evt):
     activedisplay=False
     print("Activedisplay set to False")
 
-fig, (concplot, minmax_plot) = plt.subplots(2,1, figsize=(10,10))
-fig.canvas.mpl_connect("close_event", handle_close)
+#fig, (concplot, minmax_plot) = plt.subplots(2,1, figsize=(10,10))
+fig2, minmax_plot = plt.subplots(1,1,figsize=(10,5))
+fig1, concplot = plt.subplots(1,1,figsize=(10,5))
+
+fig1.canvas.mpl_connect("close_event", handle_close)
 #fester her handle_close som kjøre-event når animasjons-figuren tvangs-lukkes
 #dette er for å avslutte animasjon når dette skjer.
 
@@ -44,9 +47,13 @@ fig.canvas.mpl_connect("close_event", handle_close)
 minmax_lvls = [];
 
 Cs = [] #Lagrer konsentrasjoner for spesifikke tidspunkter    
-ts = [] #Lagrer de nevnte tidspunktene
+ts = np.array([0, 2, 4, 9, 16, 26, 40, 180]) #Lagrer de nevnte tidspunktene (i døgn)
+ts *= 3600*24 #konverterer til sekunder
+color_addon = [(":", "r"), ("-.", "r"), ("--", "r"), ("-", "r"), 
+               (":", "b"), ("-.", "b"), ("--", "b"), ("-", "b")]
+
 modmax = 40
-plt_skiprate = 30
+plt_skiprate = 6
 
 
 dagIS = 3600*24
@@ -59,20 +66,21 @@ def hexify_proportion(num, max_num):
     hex_s = hex(prop)[2:].rjust(2, "0")
     return hex_s
 
-def special_color(num, num_max):
-    return "#" + "ff" + hexify_proportion(num_max-num, num_max)*2
+def special_color(num, num_max, color_type="r"):
+    if(color_type=="r"):
+        return "#" + "ff" + hexify_proportion(num_max-num, num_max)*2
+    elif(color_type=="b"):
+        return "#" + hexify_proportion(num_max-num, num_max)*2 + "ff"
 
 
-
-dt = 3600 #sekund mellom hver simulasjons-event    
+dt = 1800 #sekund mellom hver simulasjons-event    
 R,L = make_RL(dt, banded=create_band)
-for enum in range(10):
+for t_stop in ts:
     
     t = 0;   modnum = 0;
     
-    while(t<dagIS*180*2/110*(enum+1) and activedisplay):
+    while(t_show<t_stop and activedisplay):
         S = makeS(dt, t_show)
-        
         t+= dt;         t_show += dt;       modnum += 1
         
         C = develop(C,R,L,S, band_matrix=create_band)
@@ -82,42 +90,51 @@ for enum in range(10):
             #plt.figure(0)
             concplot.cla()
             concplot.set_title("døgn = {:.2f}".format(t_show/60/60/24))
-            
             Cslen = len(Cs)
             for enum_2, (t_choice, C_choice) in enumerate(zip(ts,Cs)):
                 concplot.plot(zs[::plt_skiprate], C_choice[::plt_skiprate], 
                          label="{:.0f}D".format(t_choice/dagIS), 
-                         color=special_color(enum_2+1, Cslen))
+                         color=special_color(enum_2+1, Cslen, color_addon[enum_2][1]),
+                         linestyle=color_addon[enum_2][0])
             concplot.plot(zs[::plt_skiprate], C[::plt_skiprate], label="{:.0f}D".format(t_show/dagIS), color="k")
+            concplot.set_title(r"DIC konsentrasjoner av dybde $z$ ved forskjellig $t$")
             concplot.set_xlabel("dybde i m")
+            concplot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
             concplot.legend()
-            #plt.pause(1e-4)
+            plt.pause(1e-3)
             
             minmax_plot.cla()
             mins, maxs, eqs, tmms = np.array(minmax_lvls).T
             tmms /= (3600*24)
             minmax_plot.plot(tmms, mins, label="min", color="b")
             minmax_plot.plot(tmms, maxs, label="max", color="r")
-            minmax_plot.plot(tmms, eqs, label="equilib", color="g")
+            minmax_plot.plot(tmms, eqs, label="equilibrium", color="g")
             #minmax_plot.set_title("atmosfærisk co2 av tid")
             minmax_plot.legend()
-            minmax_plot.set_xlabel("t i D")
-            minmax_plot.set_ylabel("DIC")
+            minmax_plot.set_title(r"min- og max- konsentrasjoner av $t$")
+            minmax_plot.set_xlabel("t i Døgn")
+            minmax_plot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
             plt.pause(1e-4)
             
             #plt.pause(1e-4)
     Cs.append(C)
-    ts.append(t_show)
+    #ts.append(t_show)
     
 concplot.cla()
 concplot.set_title("døgn = {:.2f}".format(t_show/dagIS))
 Cslen = len(Cs)
 for enum_2, (t_choice, C_choice) in enumerate(zip(ts,Cs)):
     concplot.plot(zs, C_choice, 
-             label="{:.0f}D".format(t_choice/dagIS),
-             color = special_color(enum_2+1, Cslen))
+             label="{:.0f} døgn".format(t_choice/dagIS),
+             color=special_color(enum_2+1, Cslen, color_addon[enum_2][1]),
+             linestyle=color_addon[enum_2][0])
+    concplot.set_title(r"DIC konsentrasjoner av dybde $z$ ved forskjellig $t$")
+    concplot.set_xlabel("dybde i m")
+    concplot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
 concplot.legend()
 
+fig1.suptitle(r"Tidsutvikling ved lineær økning i atmosfærisk CO$_2$", fontsize=16)
+fig2.suptitle(r"Tidsutvikling ved lineær økning i atmosfærisk CO$_2$", fontsize=16)
 
 plt.savefig("figur.svg")
     
