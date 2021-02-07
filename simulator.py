@@ -7,16 +7,13 @@ Created on Fri Jan 29 16:38:29 2021
 import matplotlib.pyplot as plt
 import numpy as np
 
-import pre_data as pd
+from pre_data import dt, C, t_keep_plot, equi_concentration, zs, linetype, plt_skiprate, modmax
 
-zs = pd.zs
-C  = pd.C
-zstep= pd.zstep
-makeS= pd.makeS
-develop = pd.develop
-make_RL = pd.make_RL
 
-equilib_conc = pd.concentration;
+from functionals import makeS, develop, make_RL, special_color
+
+
+
 
 
 create_band = True
@@ -30,108 +27,76 @@ def handle_close(evt):
     global activedisplay
     activedisplay=False
     print("Activedisplay set to False")
-
 #fig, (concplot, minmax_plot) = plt.subplots(2,1, figsize=(10,10))
-fig2, minmax_plot = plt.subplots(1,1,figsize=(10,5))
 fig1, concplot = plt.subplots(1,1,figsize=(10,5))
-
 fig1.canvas.mpl_connect("close_event", handle_close)
 #fester her handle_close som kjøre-event når animasjons-figuren tvangs-lukkes
 #dette er for å avslutte animasjon når dette skjer.
 
 
 
-
-
-
-minmax_lvls = [];
-
+minmax_lvls = []; #Lagrer minimums og maximums-konsentrasjoner i havet for skjellige tider t_keep_plot
 Cs = [] #Lagrer konsentrasjoner for spesifikke tidspunkter    
-ts = np.array([0, 2, 4, 9, 16, 26, 40, 180]) #Lagrer de nevnte tidspunktene (i døgn)
-ts *= 3600*24 #konverterer til sekunder
-color_addon = [(":", "r"), ("-.", "r"), ("--", "r"), ("-", "r"), 
-               (":", "b"), ("-.", "b"), ("--", "b"), ("-", "b")]
-
-modmax = 40
-plt_skiprate = 6
-
 
 dagIS = 3600*24
-
-t_show = 0;
-
-
-def hexify_proportion(num, max_num):
-    prop = 255*num//max_num
-    hex_s = hex(prop)[2:].rjust(2, "0")
-    return hex_s
-
-def special_color(num, num_max, color_type="r"):
-    if(color_type=="r"):
-        return "#" + "ff" + hexify_proportion(num_max-num, num_max)*2
-    elif(color_type=="b"):
-        return "#" + hexify_proportion(num_max-num, num_max)*2 + "ff"
+t = 0;
 
 
-dt = 1800 #sekund mellom hver simulasjons-event    
+
 R,L = make_RL(dt, banded=create_band)
-for t_stop in ts:
+for t_stop in t_keep_plot:
     
-    t = 0;   modnum = 0;
+    modnum = 0;
     
-    while(t_show<t_stop and activedisplay):
-        S = makeS(dt, t_show)
-        t+= dt;         t_show += dt;       modnum += 1
+    while(t<t_stop and activedisplay):
+        S = makeS(dt, t)
+        t += dt;       modnum += 1
         
         C = develop(C,R,L,S, band_matrix=create_band)
         if(modnum % modmax == 0 and plot):
-            minmax_lvls.append([np.min(C), np.max(C), equilib_conc(t_show), t_show])
-            
-            #plt.figure(0)
+            minmax_lvls.append([np.min(C), np.max(C), equi_concentration(t), t])
             concplot.cla()
-            concplot.set_title("døgn = {:.2f}".format(t_show/60/60/24))
+            concplot.set_title("døgn = {:.2f}".format(t/60/60/24))
             Cslen = len(Cs)
-            for enum_2, (t_choice, C_choice) in enumerate(zip(ts,Cs)):
+            for enum_2, (t_choice, C_choice) in enumerate(zip(t_keep_plot,Cs)):
                 concplot.plot(zs[::plt_skiprate], C_choice[::plt_skiprate], 
                          label="{:.0f}D".format(t_choice/dagIS), 
-                         color=special_color(enum_2+1, Cslen, color_addon[enum_2][1]),
-                         linestyle=color_addon[enum_2][0])
-            concplot.plot(zs[::plt_skiprate], C[::plt_skiprate], label="{:.0f}D".format(t_show/dagIS), color="k")
+                         color=special_color(enum_2+1, Cslen, linetype[enum_2][1]),
+                         linestyle=linetype[enum_2][0])
+            concplot.plot(zs[::plt_skiprate], C[::plt_skiprate], label="{:.0f}D".format(t/dagIS), color="k")
             concplot.set_title(r"DIC konsentrasjoner av dybde $z$ ved forskjellig $t$")
             concplot.set_xlabel("dybde i m")
             concplot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
             concplot.legend()
-            plt.pause(1e-3)
-            
-            minmax_plot.cla()
-            mins, maxs, eqs, tmms = np.array(minmax_lvls).T
-            tmms /= (3600*24)
-            minmax_plot.plot(tmms, mins, label="min", color="b")
-            minmax_plot.plot(tmms, maxs, label="max", color="r")
-            minmax_plot.plot(tmms, eqs, label="equilibrium", color="g")
-            #minmax_plot.set_title("atmosfærisk co2 av tid")
-            minmax_plot.legend()
-            minmax_plot.set_title(r"min- og max- konsentrasjoner av $t$")
-            minmax_plot.set_xlabel("t i Døgn")
-            minmax_plot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
             plt.pause(1e-4)
-            
-            #plt.pause(1e-4)
     Cs.append(C)
-    #ts.append(t_show)
     
 concplot.cla()
-concplot.set_title("døgn = {:.2f}".format(t_show/dagIS))
+concplot.set_title("døgn = {:.2f}".format(t/dagIS))
 Cslen = len(Cs)
-for enum_2, (t_choice, C_choice) in enumerate(zip(ts,Cs)):
+for enum_2, (t_choice, C_choice) in enumerate(zip(t_keep_plot,Cs)):
     concplot.plot(zs, C_choice, 
              label="{:.0f} døgn".format(t_choice/dagIS),
-             color=special_color(enum_2+1, Cslen, color_addon[enum_2][1]),
-             linestyle=color_addon[enum_2][0])
+             color=special_color(enum_2+1, Cslen, linetype[enum_2][1]),
+             linestyle=linetype[enum_2][0])
     concplot.set_title(r"DIC konsentrasjoner av dybde $z$ ved forskjellig $t$")
     concplot.set_xlabel("dybde i m")
     concplot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
 concplot.legend()
+
+fig2, minmax_plot = plt.subplots(1,1,figsize=(10,5))
+minmax_plot.cla()
+mins, maxs, eqs, tmms = np.array(minmax_lvls).T
+tmms /= (3600*24)
+minmax_plot.plot(tmms, mins, label="min", color="b")
+minmax_plot.plot(tmms, maxs, label="max", color="r")
+minmax_plot.plot(tmms, eqs, label="equilibrium", color="g")
+#minmax_plot.set_title("atmosfærisk co2 av tid")
+minmax_plot.legend()
+minmax_plot.set_title(r"min- og max- konsentrasjoner av $t$")
+minmax_plot.set_xlabel("t i Døgn")
+minmax_plot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
+
 
 fig1.suptitle(r"Tidsutvikling ved lineær økning i atmosfærisk CO$_2$", fontsize=16)
 fig2.suptitle(r"Tidsutvikling ved lineær økning i atmosfærisk CO$_2$", fontsize=16)
