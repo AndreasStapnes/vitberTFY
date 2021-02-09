@@ -22,7 +22,7 @@ K0      =   1e-3
 K1      =   2e-2  #Kalles Ka i teksten
 K2      =   5e-2  #Kalles Kb i teksten
 
-dt      =   1800*3 #sekund mellom hver simulasjons-event  
+dt      =   3600 #sekund mellom hver simulasjons-event  
 
 za = 7; zb = 10;
 
@@ -33,7 +33,7 @@ zs, zstep = np.linspace(0, zmax, n, retstep=True)
 Ks = K0 + K1*zs/za*np.exp(-zs/za) + K2*(zmax-zs)/zb*np.exp(-(zmax-zs)/zb)
 #K-verdier
 
-atmospheric_co2 = lambda t: 415e-6 *(1+ t/(3600*24*365)/20)
+atmospheric_co2 = lambda t: 415e-6 *(1+ 0*t/(3600*24*365)/20)
 equi_concentration = lambda t: H*atmospheric_co2(t) #Stabil overflatekonsentrasjon
 
 
