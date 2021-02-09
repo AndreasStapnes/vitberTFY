@@ -87,7 +87,7 @@ def make_RL(delta_t):
 
 
 def hexify_proportion(num, max_num):
-    prop = 255*num//max_num
+    prop = 200*num//max_num
     hex_s = hex(prop)[2:].rjust(2, "0")
     return hex_s
 

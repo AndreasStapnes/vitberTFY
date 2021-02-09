@@ -63,7 +63,7 @@ for t_stop in t_keep_plot:
                          color=special_color(enum_2+1, Cslen, linetype[enum_2][1]),
                          linestyle=linetype[enum_2][0])
             concplot.plot(zs[::plt_skiprate], C[::plt_skiprate], label="{:.0f}D".format(t/dagIS), color="k")
-            concplot.set_title(r"DIC konsentrasjoner av dybde $z$ ved forskjellig $t$")
+            concplot.set_title(r"DIC konsentrasjoner av dybde $z$ ved forskjellige $t$")
             concplot.set_xlabel("dybde i m")
             concplot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
             concplot.legend()
@@ -78,10 +78,10 @@ for enum_2, (t_choice, C_choice) in enumerate(zip(t_keep_plot,Cs)):
              label="{:.0f} døgn".format(t_choice/dagIS),
              color=special_color(enum_2+1, Cslen, linetype[enum_2][1]),
              linestyle=linetype[enum_2][0])
-    concplot.set_title(r"DIC konsentrasjoner av dybde $z$ ved forskjellig $t$")
+    concplot.set_title(r"DIC konsentrasjoner av dybde $z$ ved forskjellige $t$")
     concplot.set_xlabel("dybde i m")
     concplot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
-concplot.legend(loc="upper right")
+concplot.legend(loc="center right")
 
 fig2, minmax_plot = plt.subplots(1,1,figsize=(10,5))
 minmax_plot.cla()
@@ -100,6 +100,6 @@ minmax_plot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
 fig1.suptitle(r"Tidsutvikling med stabilt atmosfærisk CO$_2$-nivå", fontsize=16)
 fig2.suptitle(r"Tidsutvikling med stabilt atmosfærisk CO$_2$-nivå", fontsize=16)
 
-fig1.savefig("concplot.pdf")
-fig2.savefig("minmaxplot.pdf")
+fig1.savefig("concplot_Prob1.pdf")
+fig2.savefig("minmaxplot_Prob1.pdf")
     
