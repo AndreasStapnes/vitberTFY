@@ -32,7 +32,7 @@ def tdma_solver(a, b, c, d):
     return x
 
 def tdma(A, b):
-    x = tdma_solver(A[2,:-1], A[1,:], A[0,1:], b)
+    x = tdma_solver(A[2], A[1], A[0], b)
     return x
 
 
@@ -46,16 +46,16 @@ def makeS(delta_t, t = 0):
 
 
 import scipy.linalg as la
-def develop(C, R, L, S, band_matrix=False):   
-    if not band_matrix:
-        return la.solve(L, R@C + S)
-    else:
+def develop(C, R, L, S):   
+    #if not band_matrix:
+    #    return la.solve(L, R@C + S)
+    #else:
         #C = la.solve_banded((1,1), L, (R@C) + S)
-        C = tdma(L, R@C + S)
+    C = tdma(L, R@C + S)
     return C
 
 
-def make_RL(delta_t, banded=False):
+def make_RL(delta_t):
     #banded gjør matrisen kortere (lagrer kun diagonaler).
     #Med spesialiserte funksjoner
     #(linalg.solve_banded) kan matriselikninger
@@ -79,14 +79,8 @@ def make_RL(delta_t, banded=False):
     R = diag - L
     L = diag + L
     
-    if(banded):
-        #Skaper banded (diagonal-representasjon) L matrise
-        B = np.zeros((3,n))
-        B[0,1:] = L.diagonal(1);
-        B[1,:] = L.diagonal(0);
-        B[2,:-1] = L.diagonal(-1);
-        L = B
-        R = sparse.diags((R.diagonal(1), R.diagonal(0), R.diagonal(-1)), (1,0,-1))
+    L = [L.diagonal(1), L.diagonal(0), L.diagonal(-1)]
+    R = sparse.diags((R.diagonal(1), R.diagonal(0), R.diagonal(-1)), (1,0,-1))
         #Lagrer R som tridiagonal for rask matrisemultiplikasjon
     return R,L
 

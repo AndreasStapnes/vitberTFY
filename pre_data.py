@@ -8,7 +8,7 @@ import numpy as np
 
 
 zmax    = 100       #dybde i meter
-n       = 16      #antall målepunkter i dybden
+n       = 1600      #antall målepunkter i dybden
 
 H       =   5060 
 PCO2_0  =   415e-6 #Brukes ikke, men er start-konsentrasjonen for co2 i luften
@@ -33,11 +33,11 @@ zs, zstep = np.linspace(0, zmax, n, retstep=True)
 Ks = K0 + K1*zs/za*np.exp(-zs/za) + K2*(zmax-zs)/zb*np.exp(-(zmax-zs)/zb)
 #K-verdier
 
-atmospheric_co2 = lambda t: 415e-6 *(1+ 0*t/(3600*24*365)/20)
+atmospheric_co2 = lambda t: 415e-6
 equi_concentration = lambda t: H*atmospheric_co2(t) #Stabil overflatekonsentrasjon
 
 
-t_keep_plot = np.array([0, 2, 4, 9, 16, 26, 40, 180]) #Lagrer de nevnte tidspunktene (i døgn)
+t_keep_plot = np.array([0, 2, 7, 15, 24, 44, 100, 180]) #Lagrer de nevnte tidspunktene (i døgn)
 t_keep_plot *= 3600*24 #konverterer til sekunder
 
 
@@ -48,7 +48,7 @@ linetype =     [(":", "r"), ("-.", "r"), ("--", "r"), ("-", "r"),
 
 
 
-modmax = 4 #antall kjøringer før et plot blir laget
+modmax = 40 #antall kjøringer før et plot blir laget
 plt_skiprate = 1 #skip-rate under kjøring i plot
 
 

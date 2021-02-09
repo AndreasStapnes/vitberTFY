@@ -12,13 +12,11 @@ from pre_data import dt, C, t_keep_plot, equi_concentration, zs, linetype, plt_s
 
 from functionals import makeS, develop, make_RL, special_color
 
+from scipy.integrate import simps
 
 
 
-
-create_band = True
 plot = True
-
 
 
 
@@ -42,8 +40,8 @@ dagIS = 3600*24
 t = 0;
 
 
-
-R,L = make_RL(dt, banded=create_band)
+current_mass_est = 0
+R,L = make_RL(dt)
 for t_stop in t_keep_plot:
     
     modnum = 0;
@@ -52,9 +50,10 @@ for t_stop in t_keep_plot:
         S = makeS(dt, t)
         t += dt;       modnum += 1
         
-        C = develop(C,R,L,S, band_matrix=create_band)
+        minmax_lvls.append([np.min(C), np.max(C), equi_concentration(t), t])
+        C = develop(C,R,L,S)
+        
         if(modnum % modmax == 0 and plot):
-            minmax_lvls.append([np.min(C), np.max(C), equi_concentration(t), t])
             concplot.cla()
             concplot.set_title("døgn = {:.2f}".format(t/60/60/24))
             Cslen = len(Cs)
@@ -82,7 +81,7 @@ for enum_2, (t_choice, C_choice) in enumerate(zip(t_keep_plot,Cs)):
     concplot.set_title(r"DIC konsentrasjoner av dybde $z$ ved forskjellig $t$")
     concplot.set_xlabel("dybde i m")
     concplot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
-concplot.legend()
+concplot.legend(loc="upper right")
 
 fig2, minmax_plot = plt.subplots(1,1,figsize=(10,5))
 minmax_plot.cla()
