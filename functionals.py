@@ -7,6 +7,7 @@ Created on Sun Feb  7 09:33:57 2021
 from pre_data import Ks, zstep, kw, n, equi_concentration
 import numpy as np
 from numba import jit
+import scipy.sparse as sparse
 
 DK = np.concatenate((np.array([0]),  #kalles K' i teksten
                      Ks[2:] - Ks[:-2], 
@@ -85,6 +86,8 @@ def make_RL(delta_t, banded=False):
         B[1,:] = L.diagonal(0);
         B[2,:-1] = L.diagonal(-1);
         L = B
+        R = sparse.diags((R.diagonal(1), R.diagonal(0), R.diagonal(-1)), (1,0,-1))
+        #Lagrer R som tridiagonal for rask matrisemultiplikasjon
     return R,L
 
 

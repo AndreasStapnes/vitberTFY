@@ -8,7 +8,7 @@ import numpy as np
 
 
 zmax    = 100       #dybde i meter
-n       = 1600      #antall målepunkter i dybden
+n       = 16      #antall målepunkter i dybden
 
 H       =   5060 
 PCO2_0  =   415e-6 #Brukes ikke, men er start-konsentrasjonen for co2 i luften
@@ -16,7 +16,7 @@ PCO2_0  =   415e-6 #Brukes ikke, men er start-konsentrasjonen for co2 i luften
 
 a       =   6.97e-7
 u       =   10
-kw      =   a*u**2
+kw      =   a*u**2 
 
 K0      =   1e-3 
 K1      =   2e-2  #Kalles Ka i teksten
@@ -48,7 +48,7 @@ linetype =     [(":", "r"), ("-.", "r"), ("--", "r"), ("-", "r"),
 
 
 
-modmax = 40 #antall kjøringer før et plot blir laget
+modmax = 4 #antall kjøringer før et plot blir laget
 plt_skiprate = 1 #skip-rate under kjøring i plot
 
 
