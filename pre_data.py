@@ -33,7 +33,7 @@ zs, zstep = np.linspace(0, zmax, n, retstep=True)
 Ks = K0 + K1*zs/za*np.exp(-zs/za) + K2*(zmax-zs)/zb*np.exp(-(zmax-zs)/zb)
 #K-verdier
 
-atmospheric_co2 = lambda t: 415e-6
+atmospheric_co2 = lambda t: 415e-6 + 2e-6*t/(24*365*3600)
 equi_concentration = lambda t: H*atmospheric_co2(t) #Stabil overflatekonsentrasjon
 
 
@@ -55,6 +55,7 @@ plt_skiprate = 1 #skip-rate under kjøring i plot
 
 
 C = np.zeros_like(zs)
+C += equi_concentration(0);
 #C += concentration(0) #setter start-konsentrasjon som dagens konsentrasjon
 
 

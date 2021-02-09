@@ -97,9 +97,9 @@ minmax_plot.set_xlabel("t i Døgn")
 minmax_plot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
 
 
-fig1.suptitle(r"Tidsutvikling med stabilt atmosfærisk CO$_2$-nivå", fontsize=16)
-fig2.suptitle(r"Tidsutvikling med stabilt atmosfærisk CO$_2$-nivå", fontsize=16)
+fig1.suptitle(r"Tidsutvikling med lineært økende atmosfærisk CO$_2$-nivå", fontsize=16)
+fig2.suptitle(r"Tidsutvikling med lineært økende atmosfærisk CO$_2$-nivå", fontsize=16)
 
-fig1.savefig("concplot.pdf")
-fig2.savefig("minmaxplot.pdf")
+fig1.savefig("concplot_Prob1B.pdf")
+fig2.savefig("minmaxplot_Prob1B.pdf")
     
