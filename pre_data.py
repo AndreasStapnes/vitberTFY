@@ -7,8 +7,8 @@ Created on Wed Feb  3 13:45:34 2021
 import numpy as np
 
 
-zmax    = 100       #dybde i meter
-n       = 1600      #antall målepunkter i dybden
+zmax    = 4000       #dybde i meter
+n       = 8000      #antall målepunkter i dybden
 
 H       =   5060 
 PCO2_0  =   415e-6 #Brukes ikke, men er start-konsentrasjonen for co2 i luften
@@ -18,28 +18,26 @@ a       =   6.97e-7
 u       =   10
 kw      =   a*u**2 
 
-K0      =   1e-3 
-K1      =   2e-2  #Kalles Ka i teksten
-K2      =   5e-2  #Kalles Kb i teksten
+K0      =   1e-4 
+K1      =   1e-2
 
-dt      =   3600 #sekund mellom hver simulasjons-event  
+dt      =   3600*2 #sekund mellom hver simulasjons-event  
 
-za = 7; zb = 10;
-
+z0 = 100;
+a  = 0.5;
 
 
 zs, zstep = np.linspace(0, zmax, n, retstep=True)
 
-Ks = K0 + K1*zs/za*np.exp(-zs/za) + K2*(zmax-zs)/zb*np.exp(-(zmax-zs)/zb)
+Ks = K1+(K0-K1)/(1+np.exp(-a*(zs-z0)))
 #K-verdier
 
 atmospheric_co2 = lambda t: 415e-6
 equi_concentration = lambda t: H*atmospheric_co2(t) #Stabil overflatekonsentrasjon
 
 
-t_keep_plot = np.array([0, 2, 7, 15, 24, 44, 100, 180]) #Lagrer de nevnte tidspunktene (i døgn)
+t_keep_plot = np.array([0, 10000]) #Lagrer de nevnte tidspunktene (i døgn)
 t_keep_plot *= 3600*24 #konverterer til sekunder
-
 
 linetype =     [(":", "r"), ("-.", "r"), ("--", "r"), ("-", "r"), 
                (":", "b"), ("-.", "b"), ("--", "b"), ("-", "b"),
