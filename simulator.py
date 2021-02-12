@@ -7,7 +7,7 @@ Created on Fri Jan 29 16:38:29 2021
 import matplotlib.pyplot as plt
 import numpy as np
 
-from pre_data import dt, C, t_keep_plot, equi_concentration, zs, linetype, plt_skiprate, modmax
+from pre_data import dt, C, t_keep_plot, equi_concentration, zs, linetype, plt_skiprate, modmax, kw
 
 
 from functionals import makeS, develop, make_RL, special_color
@@ -35,10 +35,11 @@ fig1.canvas.mpl_connect("close_event", handle_close)
 
 minmax_lvls = []; #Lagrer minimums og maximums-konsentrasjoner i havet for skjellige tider t_keep_plot
 Cs = [] #Lagrer konsentrasjoner for spesifikke tidspunkter    
+masses = []
 
 dagIS = 3600*24
 t = 0;
-
+mass = 0;
 
 current_mass_est = 0
 R,L = make_RL(dt)
@@ -50,8 +51,12 @@ for t_stop in t_keep_plot:
         S = makeS(dt, t)
         t += dt;       modnum += 1
         
+        mass += kw*(equi_concentration(t)-C[0])*dt
+        
+        masses.append([t,mass]);
         minmax_lvls.append([np.min(C), np.max(C), equi_concentration(t), t])
         C = develop(C,R,L,S)
+        
         
         if(modnum % modmax == 0 and plot):
             concplot.cla()
@@ -95,6 +100,15 @@ minmax_plot.legend()
 minmax_plot.set_title(r"min- og max- konsentrasjoner av $t$")
 minmax_plot.set_xlabel("t i Døgn")
 minmax_plot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
+
+
+fig3, massplot = plt.subplots(1,1,figsize=(10,5))
+massplot.cla()
+massplot.plot(*(np.array(masses).T))
+massplot.set_title(r"totalt absorbert CO$_2$ av $t$")
+massplot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
+massplot.set_xlabel("t i døgn")
+
 
 
 fig1.suptitle(r"Tidsutvikling med stabilt atmosfærisk CO$_2$-nivå", fontsize=16)
