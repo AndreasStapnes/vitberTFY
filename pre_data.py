@@ -21,7 +21,7 @@ kw      =   a*u**2
 K0      =   1e-4 
 K1      =   1e-2
 
-dt      =   3600*24 #sekund mellom hver simulasjons-event  
+dt      =   3600*6 #sekund mellom hver simulasjons-event  
 
 z0 = 100;
 a  = 0.5;
