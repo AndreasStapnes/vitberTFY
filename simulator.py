@@ -50,11 +50,11 @@ for t_stop in t_keep_plot:
     while(t<t_stop and activedisplay):
         S = makeS(dt, t)
         
-        mass += kw*(1/2*(equi_concentration(t)+equi_concentration(t+dt))-C[0])*dt 
-    
         masses.append([t,mass]);
         minmax_lvls.append([np.min(C), np.max(C), equi_concentration(t), t])
         
+        mass += kw*(1/2*(equi_concentration(t)+equi_concentration(t+dt))-C[0])*dt 
+    
         t += dt;       modnum += 1
         C = develop(C,R,L,S)
         
