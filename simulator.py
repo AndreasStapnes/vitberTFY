@@ -7,7 +7,7 @@ Created on Fri Jan 29 16:38:29 2021
 import matplotlib.pyplot as plt
 import numpy as np
 
-from pre_data import dt, C, t_keep_plot, equi_concentration, zs, linetype, plt_skiprate, modmax, kw
+from pre_data import dt, C, t_keep_plot, equi_concentration, zs, linetype, plt_skiprate, modmax, kw, zstep
 
 
 from functionals import makeS, develop, make_RL, special_color
@@ -50,7 +50,7 @@ for t_stop in t_keep_plot:
     while(t<t_stop and activedisplay):
         S = makeS(dt, t)
         
-        masses.append([t,mass]);
+        masses.append([t,mass, simps(C)*zstep]);
         minmax_lvls.append([np.min(C), np.max(C), equi_concentration(t), t])
         
         mass += kw*(1/2*(equi_concentration(t)+equi_concentration(t+dt))-C[0])*dt 
@@ -106,10 +106,12 @@ minmax_plot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
 fig3, massplot = plt.subplots(1,1,figsize=(10,5))
 massplot.cla()
 masses = np.array(masses).T
-massplot.plot(masses[0]/(3600*24), masses[1])
+massplot.plot(masses[0]/(3600*24), masses[1], label="Beregnet DIC fra overflatekondisjoner")
+massplot.plot(masses[0]/(3600*24), masses[2], label="Integrert DIC")
 massplot.set_title(r"totalt absorbert CO$_2$ av $t$")
 massplot.set_ylabel(r"DIC i $\frac{mol}{m^2}$")
 massplot.set_xlabel("t i døgn")
+massplot.legend()
 
 
 
