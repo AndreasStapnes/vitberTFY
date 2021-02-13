@@ -53,6 +53,6 @@ plt_skiprate = 1 #skip-rate under kjøring i plot
 
 
 C = np.zeros_like(zs)
-#C += concentration(0) #setter start-konsentrasjon som dagens konsentrasjon
+C += equi_concentration(0) #setter start-konsentrasjon som dagens konsentrasjon
 
 
