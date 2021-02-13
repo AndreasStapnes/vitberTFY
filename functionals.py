@@ -62,6 +62,7 @@ def make_RL(delta_t):
     #på formen Ax = b for banded A løses mye raskere.
     
     #skaper R og L
+    '''
     diag = np.identity(n)
     u_diag = np.roll(diag, 1, 1)
     u_diag[n-1,0]=0 #upper diagonal
@@ -75,6 +76,25 @@ def make_RL(delta_t):
     L = -((-2*diag + u_diag + l_diag + ul_correction.T+lr_correction.T) * Ks).T * alpha
     L += (((-u_diag+ul_correction + l_diag-lr_correction) * alpha/4).T*DK).T
     L[0,0] += gamma;
+    '''
+    #Ny diagonal konstruksjon-----------------------------
+    tridiag = (1,0,-1)
+    null = sparse.diags((0,0,0), tridiag, shape=(n,n))
+    diag = sparse.diags((0,1,0), tridiag, shape=(n,n)) #Identitetsmatrisen, tridiagonal
+    u_diag = sparse.diags((1,0,0),tridiag, shape=(n,n)) #Upper identity
+    l_diag = sparse.diags((0,0,1), tridiag, shape=(n,n))
+    null_diags = [null.diagonal(1), null.diagonal(0), null.diagonal(-1)]
+    ul_corr = [i.copy() for i in null_diags]; ul_corr[0][0] = 1; ul_corr = sparse.diags(ul_corr, tridiag)
+    lr_corr = [i.copy() for i in null_diags]; lr_corr[2][-1] = 1; lr_corr = sparse.diags(lr_corr, tridiag)
+    
+    alpha = delta_t/(2*zstep**2)
+    gamma = 2*alpha*kw*zstep*(1-(Ks[1]-Ks[0])/(2*Ks[0]))
+    
+    L = -((-2*diag + u_diag + l_diag + ul_corr.T+lr_corr.T).multiply(Ks)).T * alpha
+    L += (((-u_diag+ul_corr + l_diag-lr_corr) * alpha/4).T.multiply(DK)).T
+    L[0,0] += gamma;
+    #--------------------------------------------------
+    
     
     R = diag - L
     L = diag + L
