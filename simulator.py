@@ -120,4 +120,4 @@ fig2.suptitle(r"Tidsutvikling med stabilt atmosfærisk CO$_2$-nivå", fontsize=1
 
 fig1.savefig("concplot.pdf")
 fig2.savefig("minmaxplot.pdf")
-    
+fig3.savefig("massplot.pdf")
