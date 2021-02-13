@@ -8,7 +8,7 @@ import numpy as np
 
 
 zmax    = 4000       #dybde i meter
-n       = 64000      #antall målepunkter i dybden
+n       = 128000      #antall målepunkter i dybden
 
 H       =   5060 
 PCO2_0  =   415e-6 #Brukes ikke, men er start-konsentrasjonen for co2 i luften
