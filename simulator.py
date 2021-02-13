@@ -39,7 +39,7 @@ masses = []
 
 dagIS = 3600*24
 t = 0;
-mass = 0;
+mass = simps(C)*zstep;
 
 current_mass_est = 0
 R,L = make_RL(dt)
@@ -120,4 +120,5 @@ fig2.suptitle(r"Tidsutvikling med stabilt atmosfærisk CO$_2$-nivå", fontsize=1
 
 fig1.savefig("concplot.pdf")
 fig2.savefig("minmaxplot.pdf")
+fig3.savefig("massplot.pdf")
     
