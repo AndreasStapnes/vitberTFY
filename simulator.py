@@ -106,13 +106,13 @@ minmax_plot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
 fig3, massplot = plt.subplots(1,1,figsize=(10,5))
 massplot.cla()
 masses = np.array(masses).T
-massplot.plot(masses[0]/(3600*24), masses[1], "Beregnet DIC fra overflatekondisjoner")
-massplot.plot(masses[0]/(3600*24), masses[2], "Integrert DIC")
+massplot.plot(masses[0]/(3600*24), masses[1], label="Beregnet DIC fra overflatekondisjoner")
+massplot.plot(masses[0]/(3600*24), masses[2], label="Integrert DIC")
 #massplot.plot(masses[0]/(3600*24), masses[2]-masses[1])
 massplot.set_title(r"totalt absorbert CO$_2$ av $t$")
 massplot.set_ylabel(r"DIC i $\frac{mol}{m^2}$")
 massplot.set_xlabel("t i døgn")
-
+massplot.legend()
 
 
 fig1.suptitle(r"Tidsutvikling med økende atmosfærisk CO$_2$-nivå", fontsize=16)
