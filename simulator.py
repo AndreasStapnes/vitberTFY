@@ -108,7 +108,7 @@ massplot.cla()
 masses = np.array(masses).T
 massplot.plot(masses[0]/(3600*24), masses[1])
 massplot.set_title(r"totalt absorbert CO$_2$ av $t$")
-massplot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
+massplot.set_ylabel(r"DIC i $\frac{mol}{m^2}$")
 massplot.set_xlabel("t i døgn")
 
 
