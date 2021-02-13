@@ -8,7 +8,7 @@ import numpy as np
 
 
 zmax    = 4000       #dybde i meter
-n       = 64000      #antall målepunkter i dybden
+n       = 4000      #antall målepunkter i dybden
 
 H       =   5060 
 PCO2_0  =   415e-6 #Brukes ikke, men er start-konsentrasjonen for co2 i luften
@@ -21,7 +21,7 @@ kw      =   a*u**2
 K0      =   1e-4 
 K1      =   1e-2
 
-dt      =   3600*4 #sekund mellom hver simulasjons-event  
+dt      =   3600*10 #sekund mellom hver simulasjons-event  
 
 z0 = 100;
 a  = 0.5;
@@ -46,13 +46,13 @@ linetype =     [(":", "r"), ("-.", "r"), ("--", "r"), ("-", "r"),
 
 
 
-modmax = 200 #antall kjøringer før et plot blir laget
+modmax = 400 #antall kjøringer før et plot blir laget
 plt_skiprate = 1 #skip-rate under kjøring i plot
 
 
 
 
 C = np.zeros_like(zs)
-C += equi_concentration(0) #setter start-konsentrasjon som dagens konsentrasjon
+#C += concentration(0) #setter start-konsentrasjon som dagens konsentrasjon
 
 
