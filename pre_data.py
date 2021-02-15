@@ -23,6 +23,9 @@ K1      =   1e-2
 
 dt      =   3600*4 #sekund mellom hver simulasjons-event  
 
+C_mass  =   12
+ocean_A =   360e12
+
 z0 = 100;
 a  = 0.5;
 

@@ -7,7 +7,7 @@ Created on Fri Jan 29 16:38:29 2021
 import matplotlib.pyplot as plt
 import numpy as np
 
-from pre_data import dt, C, t_keep_plot, equi_concentration, zs, linetype, plt_skiprate, modmax, kw, zstep
+from pre_data import dt, C, t_keep_plot, equi_concentration, zs, linetype, plt_skiprate, modmax, kw, zstep, ocean_A, C_mass
 
 
 from functionals import makeS, develop, make_RL, special_color
@@ -106,12 +106,15 @@ minmax_plot.set_ylabel(r"DIC i $\frac{mol}{m^3}$")
 fig3, massplot = plt.subplots(1,1,figsize=(10,5))
 massplot.cla()
 masses = np.array(masses).T
+masses[1:] *= C_mass * ocean_A
 massplot.plot(masses[0]/(3600*24), masses[1], label="Beregnet DIC fra overflatekondisjoner")
 massplot.plot(masses[0]/(3600*24), masses[2], label="Integrert DIC")
-massplot.set_title(r"totalt absorbert CO$_2$ av $t$")
-massplot.set_ylabel(r"DIC i $\frac{mol}{m^2}$")
+massplot.set_title(r"globalt absorbert CO$_2$ i verdenshavene")
+massplot.set_ylabel(r"DIC i $g$")
 massplot.set_xlabel("t i døgn")
 massplot.legend()
+print("Start-masse: Integrert={}, overflate={}".format(masses[2][0], masses[1][0]))
+print("Slutt-masse: Integrert={}, overflate={}".format(masses[2][-1], masses[1][-1]))
 
 
 
