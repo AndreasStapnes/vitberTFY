@@ -118,8 +118,8 @@ print("Slutt-masse: Integrert={}, overflate={}".format(masses[2][-1], masses[1][
 
 
 
-fig1.suptitle(r"Tidsutvikling med stabilt atmosfærisk CO$_2$-nivå", fontsize=16)
-fig2.suptitle(r"Tidsutvikling med stabilt atmosfærisk CO$_2$-nivå", fontsize=16)
+fig1.suptitle(r"Tidsutvikling med økende atmosfærisk CO$_2$-nivå", fontsize=16)
+fig2.suptitle(r"Tidsutvikling med økende atmosfærisk CO$_2$-nivå", fontsize=16)
 
 fig1.savefig("concplot.pdf")
 fig2.savefig("minmaxplot.pdf")
