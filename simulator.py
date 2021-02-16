@@ -117,7 +117,7 @@ masses = np.array(masses).T #Her vil masses[0] være tider, masses[1] være bere
 masses[1:] *= C_mass * ocean_A   #Konverterer kolonne-DIC til globalt DIC i gram basert på parametre fra pre_data
 massplot.plot(masses[0]/(3600*24), masses[1], label="Beregnet DIC fra overflatekondisjoner")
 massplot.plot(masses[0]/(3600*24), masses[2], label="Integrert DIC")
-massplot.set_title(r"globalt absorbert CO$_2$ i verdenshavene")
+massplot.set_title(r"Globalt absorbert CO$_2$ i verdenshavene")
 massplot.set_ylabel(r"DIC i $g$")
 massplot.set_xlabel("t i døgn")
 massplot.legend()
